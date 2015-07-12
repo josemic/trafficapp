@@ -61,10 +61,11 @@ At this point you have a single node of trafficapp running. Lets test it via the
 Now it is time to store data:
 
 Format:
-
+```
 trafficapp:update({deg, Level, Lat, Lon}, {OSMWayID, OSMNodeID}, Data).
 or 
 trafficapp:update({num, Level, TileX, TileY}, {OSMWayID, OSMNodeID}, Data).
+```
 
 ```
 2>trafficapp:update({deg, 14, 51, 52}, {123123123, 234234234}, "Data1").
@@ -76,7 +77,7 @@ Format tdb.
 Now it is time to read data:
 
 Format:
-
+```
 trafficapp:fetch({deg, Level, Lat, Lon}, {OSMWayID, OSMNodeID}).
 trafficapp:fetch({deg, Level, Lat, Lon}, {OSMWayID}).
 trafficapp:fetch({deg, Level, Lat, Lon}).
@@ -84,6 +85,7 @@ trafficapp:fetch({num, Level, TileX, TileY}, {OSMWayID, OSMNodeID}).
 trafficapp:fetch({num, Level, TileX, TileY}, {OSMWayID}).
 or
 trafficapp:fetch({num, Level, TileX, TileY}).
+```
 
 Example:
 ```
