@@ -112,26 +112,26 @@ Example file update.xml:
   </traffic_api>
 </osm_traffic>
 
-curl -v -v  "http://localhost:8080/update/num" -d @update.xml
-curl -v -v  "http://localhost:8080/update/num" -d @deps/traffic_rest_app/xml/update.xml
-curl -v -v  "http://localhost:8080/update/num" -d @deps/traffic_rest_app/xml/update1.xml
-curl -v -v  "http://localhost:8080/update/num" -d @deps/traffic_rest_app/xml/update2.xml
-curl -v -v  "http://localhost:8080/update/num" -d @deps/traffic_rest_app/xml/update3.xml
+curl -v "http://localhost:8080/update" -d @deps/traffic_rest_app/xml/update.xml
+curl -v "http://localhost:8080/update" -d @deps/traffic_rest_app/xml/update1.xml
+curl -v "http://localhost:8080/update" -d @deps/traffic_rest_app/xml/update2.xml
+curl -v "http://localhost:8080/update" -d @deps/traffic_rest_app/xml/update3.xml
 
-curl -v -H "Content-Type:text/plain" "http://127.0.0.1:8080/fetch/deg?zoom=14&lat=51&lon=52&wayid=123123123&nodeid=5000"
+curl -H "Content-Type:text/plain" "http://127.0.0.1:8080/fetch/deg?zoom=14&lat=51&lon=52&wayid=123123123&nodeid=5000"
 >> [{ok,<<" this is the payload for way 123123123 node id 5000">>}]
 
-curl -v -H "Content-Type:text/plain" "http://127.0.0.1:8080/fetch/deg?zoom=14&lat=51&lon=52&wayid=123123123
+curl -H "Content-Type:text/plain" "http://127.0.0.1:8080/fetch/deg?zoom=14&lat=51&lon=52&wayid=123123123"
 >> [{ok,<<" this is the payload for way 123123123">>},
 >>  {ok,<<" this is the payload for way 123123123 node id 5000">>},
 >>  {ok,<<" this is the payload for way 123123123 node id 5002">>}]
 
-curl -v -H "Content-Type:text/plain" "http://127.0.0.1:8080/fetch/deg?zoom=14&lat=51&lon=52
+curl -H "Content-Type:text/plain" "http://127.0.0.1:8080/fetch/deg?zoom=14&lat=51&lon=52"
 >>[{ok,<<" this is the payload for way tile  tile_deg level=\"14\" lat=\"51\" lon= \"52\"">>},
 >> {ok,<<" this is the payload for way 123123123">>},
 >> {ok,<<" this is the payload for way 123123123 node id 5000">>},
 >> {ok,<<" this is the payload for way 123123123 node id 5002">>}]
 
+In case of errors the curl flag -v is helpful.
 
 ./rel/trafficapp/bin/trafficapp stop
 
