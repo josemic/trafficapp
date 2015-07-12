@@ -18,17 +18,17 @@ Concept:
 Like Openstreetmap the data is stored, while only one layer. Currently the 
 layer is fixed to 14. Within the layer the data is stored in tiles which can 
 be either be addressed using
-1. Degrees: lattitude and longitude or
-2. Numbers: tile numbers X and tile number Y
+*1. Degrees: lattitude and longitude or
+*2. Numbers: tile numbers X and tile number Y
 
 Within the tile the traffic data shall be attached to way and one node of the 
 way. (The format of the traffic data is currently not defined, while it might be 
 wise to use Json, as it can be embedded into xml. Tbd.).
 
 When retrieving the data from the database, either the data can be retrieved:
-1. By addressing the tile
-2. By addressing the tile and a specific way identified by its id
-3. By addressing the tile, a specific way and a specifc node by their ids
+*1. By addressing the tile
+*2. By addressing the tile and a specific way identified by its id
+*3. By addressing the tile, a specific way and a specifc node by their ids
 
 In case of 2 (all data of the way) and 3 (all data of the tile) is accumulated. 
 Note: 
