@@ -43,8 +43,8 @@ Application Structure
 This application is based on riak core and rebar_riak_core: 
 
 
-https://github.com/basho/riak_core
-https://github.com/basho/rebar_riak_core
+* https://github.com/basho/riak_core
+* https://github.com/basho/rebar_riak_core
 
 ```
 make rel
