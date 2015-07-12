@@ -18,17 +18,17 @@ Concept:
 Like Openstreetmap the data is stored, while only one layer. Currently the 
 layer is fixed to 14. Within the layer the data is stored in tiles which can 
 be either be addressed using
-1) Degrees: lattitude and longitude or
-2) Numbers: tile numbers X and tile number Y
+1. Degrees: lattitude and longitude or
+2. Numbers: tile numbers X and tile number Y
 
 Within the tile the traffic data shall be attached to way and one node of the 
 way. (The format of the traffic data is currently not defined, while it might be 
 wise to use Json, as it can be embedded into xml. Tbd.).
 
 When retrieving the data from the database, either the data can be retrieved:
-1) By addressing the tile
-2) By addressing the tile and a specific way identified by its id
-3) By addressing the tile, a specific way and a specifc node by their ids
+1. By addressing the tile
+2. By addressing the tile and a specific way identified by its id
+3. By addressing the tile, a specific way and a specifc node by their ids
 
 In case of 2 (all data of the way) and 3 (all data of the tile) is accumulated. 
 Note: 
@@ -42,32 +42,41 @@ Application Structure
 
 This application is based on riak core and rebar_riak_core: 
 
+
 https://github.com/basho/riak_core
 https://github.com/basho/rebar_riak_core
 
+```
 make rel
 ./rel/trafficapp/bin/trafficapp console
+```
 
 At this point you have a single node of trafficapp running. Lets test it via the erlang console:
 
+```
 1> trafficapp:ping().
 {pong,753586781748746817198774991869333432010090217472}
+```
 
 Now it is time to store data:
 
 Format:
+
 trafficapp:update({deg, Level, Lat, Lon}, {OSMWayID, OSMNodeID}, Data).
 or 
 trafficapp:update({num, Level, TileX, TileY}, {OSMWayID, OSMNodeID}, Data).
 
+```
 2>trafficapp:update({deg, 14, 51, 52}, {123123123, 234234234}, "Data1").
-2>trafficapp:update({deg, 14, 51, 52}, {123123123, 234235435}, "Data2").
+3>trafficapp:update({deg, 14, 51, 52}, {123123123, 234235435}, "Data2").
+```
 Data could e.g. inform that there is a traffic jam and the highest speed is 5 mph.
 Format tdb.
 
 Now it is time to read data:
 
 Format:
+
 trafficapp:fetch({deg, Level, Lat, Lon}, {OSMWayID, OSMNodeID}).
 trafficapp:fetch({deg, Level, Lat, Lon}, {OSMWayID}).
 trafficapp:fetch({deg, Level, Lat, Lon}).
@@ -77,27 +86,30 @@ or
 trafficapp:fetch({num, Level, TileX, TileY}).
 
 Example:
-trafficapp:fetch({deg, 14, 51, 52}, {123123123}).
+```
+4>trafficapp:fetch({deg, 14, 51, 52}, {123123123}).
 ...
 [{ok,<<"Data1">>},{ok,<<"Data2">>}]
 ...
-
+```
 
 to fetch data associated to way 123123123 within tile {deg, 14, 51, 52}.
 
 Now shut it down:
 
-2> q().
-
+```
+5> q().
+```
 .. and lets test it using the cmdline, and test it via http request:
-
+```
 ./rel/trafficapp/bin/trafficapp start
 
 ./rel/trafficapp/bin/trafficapp ping
 curl http://localhost:8080/trafficapp/ping
-
+```
 
 Example file update.xml:
+```
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE osm_traffic SYSTEM "update.dtd">
 
@@ -111,7 +123,9 @@ Example file update.xml:
     <payload> this is the payload </payload>
   </traffic_api>
 </osm_traffic>
+```
 
+```
 curl -v "http://localhost:8080/update" -d @deps/traffic_rest_app/xml/update.xml
 curl -v "http://localhost:8080/update" -d @deps/traffic_rest_app/xml/update1.xml
 curl -v "http://localhost:8080/update" -d @deps/traffic_rest_app/xml/update2.xml
@@ -130,11 +144,13 @@ curl -H "Content-Type:text/plain" "http://127.0.0.1:8080/fetch/deg?zoom=14&lat=5
 >> {ok,<<" this is the payload for way 123123123">>},
 >> {ok,<<" this is the payload for way 123123123 node id 5000">>},
 >> {ok,<<" this is the payload for way 123123123 node id 5002">>}]
+```
 
 In case of errors the curl flag -v is helpful.
 
+```
 ./rel/trafficapp/bin/trafficapp stop
-
+```
 
 
 
