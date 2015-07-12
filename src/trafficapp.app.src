@@ -1,0 +1,17 @@
+%% -*- erlang -*-
+{application, trafficapp,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  riak_core,
+                  mochiweb,
+                  webmachine,
+                  traffic_rest_app
+                 ]},
+  {mod, { trafficapp_app, []}},
+  {env, []}
+ ]}.
