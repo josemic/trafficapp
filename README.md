@@ -1,4 +1,4 @@
-trafficapp: A Riak Core Application
+trafficapp: A Riak Core based Application
 ======================================
 
 Status: Proof of Concept
@@ -159,5 +159,22 @@ In case of errors the curl flag -v is helpful.
 Note: 
 The web port of the rest interface is currently defined in /rel/files/app.config
 
+For usage of devrel etc. see description:
+
+https://github.com/basho/rebar_riak_core
+
+replace firstapp by trafficapp
+
+and see ./rel/files/app.config for the configuration of the rest interface ports
+and ip addresses for the individual nodes.
+
+Simplified picture:
+
+   rest                         rest 
+   port                         port
+    |                            |
+/-------\                    /-------\
+| node1 |<--riak core        | node2 |<-- riak core
+\-------/   startup, sync,.. \-------/    startup, sync, ...
 
 
