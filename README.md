@@ -159,22 +159,84 @@ In case of errors the curl flag -v is helpful.
 Note: 
 The web port of the rest interface is currently defined in /rel/files/app.config
 
-For usage of devrel etc. see description:
+devrel
+----------
 
-https://github.com/basho/rebar_riak_core
+Above we showed how to start a single node, but this isn't typically how this application is tested.  Instead, there is something called a _devrel_ that allows one to easily set up a local `N`-node cluster. By defauly `N` is 4. You can change this by either editing the `Makefile` and changing `DEVNODES` to your prefered `N`, or by setting the variable `DEVNODES` before running the commands below.
 
-replace firstapp by trafficapp
+Build the dev-nodes:
 
-and see ./rel/files/app.config for the configuration of the rest interface ports
-and ip addresses for the individual nodes.
+    make devrel
 
-Simplified picture:
+This did create 4 separate instances under the `dev/` dir; check it out:
 
-   rest                         rest 
-   port                         port
-    |                            |
-/-------\                    /-------\
-| node1 |<--riak core        | node2 |<-- riak core
-\-------/   startup, sync,.. \-------/    startup, sync, ...
+    ls dev
 
+Now, lets start all the nodes:
+
+    for d in dev/dev*; do $d/bin/trafficapp start; done
+
+Verify that the nodes are up and running:
+
+    for d in dev/dev*; do $d/bin/trafficapp ping; done
+
+You should see four `pong` replies.  At this point it is worth saying that you have four **INDIVIDUAL** trafficapp nodes running.  They are **NOT** aware of each other yet. In order to form a cluster you have to _join_ the nodes. That has to be done only once. If a node, or the entire cluster, goes down it will remember the nodes it was connected to.
+
+    for d in dev/dev{2,3,4}; do $d/bin/trafficapp-admin join trafficapp1@127.0.0.1; done
+
+Finally, to make sure they really all agree on the shape of the cluster you can ask if the _ring_ is "ready."
+
+    ./dev/dev1/bin/trafficapp-admin ringready
+
+Which returns something like:
+
+    TRUE All nodes agree on the ring ['trafficapp1@127.0.0.1','trafficapp2@127.0.0.1','trafficapp3@127.0.0.1'],'trafficapp4@127.0.0.1']
+
+To verify you have a 4 node cluster and to see the distribution of the ring, run the `member_status` command:
+
+    ./dev/dev1/bin/trafficapp-admin member_status
+
+Which returns:
+
+    ================================= Membership ==================================
+    Status     Ring    Pending    Node
+    -------------------------------------------------------------------------------
+    valid      25.0%      --      'trafficapp1@127.0.0.1'
+    valid      25.0%      --      'trafficapp2@127.0.0.1'
+    valid      25.0%      --      'trafficapp3@127.0.0.1'
+    valid      25.0%      --      'trafficapp4@127.0.0.1'
+    -------------------------------------------------------------------------------
+    Valid:4 / Leaving:0 / Exiting:0 / Joining:0 / Down:0
+
+Pretty cool!! Your riak-core cluster is up and running.
+
+And in case you want to stop all the nodes:
+
+    for d in dev/dev*; do $d/bin/trafficapp stop; done
+
+stage and stagedevrel
+----------
+
+For rapid, iterative development both `make rel` and `make devrel`
+have a `stage` counterpart. Running either:
+
+    make stage
+
+or
+
+    make stagedevrel
+
+will cause the `deps` and `apps` directories to be symlinked into the
+release(s) `lib` directory. This means you can edit your apps source
+code, recompile it, and load it on to the running node(s). You can
+either start mochiweb reloader
+
+    reloader:start().
+
+when attached to the node(s), which will cause any changes to be
+automatically reloaded. Or attach to a running node and run
+
+    `l(mod_name)`.
+
+to reload a specific module.
 
