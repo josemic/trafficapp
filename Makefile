@@ -1,17 +1,13 @@
-REBAR = $(shell pwd)/rebar
-#REBAR = $(shell pwd)/rebar3
-REBAR1 = /home/michael/Programming/Erlang/rebar/rebar_modified/rebar
-REBAR = /home/michael/Programming/Erlang/rebar/rebar/rebar
+#REBAR = $(shell pwd)/rebar
+REBAR = rebar
 .PHONY: deps
 
-#all: compile
 all: deps compile
 
 compile:
 	$(REBAR) compile
 
 deps:
-#	$(REBAR1) get-deps
 	$(REBAR) get-deps
 
 clean:
@@ -21,7 +17,6 @@ distclean: clean devclean relclean
 	$(REBAR) delete-deps
 
 rel: all
-#	$(REBAR1) generate
 	$(REBAR) generate
 relclean:
 	rm -rf rel/trafficapp
